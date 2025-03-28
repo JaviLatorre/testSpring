@@ -1,5 +1,9 @@
 package com.javier.test.model;
 
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -13,7 +17,8 @@ public class Archivo {
     private String codigo;
 
     @Column(nullable = true)
-    private java.util.Date fechaInicioVigencia;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") // Formato adecuado para JSON
+    private LocalDateTime fechaInicioVigencia;
 
     @Column(nullable = true, length = 60)
     private String nombreFichero;
@@ -50,11 +55,11 @@ public class Archivo {
         this.codigo = codigo;
     }
 
-    public java.util.Date getFechaInicioVigencia() {
+    public LocalDateTime getFechaInicioVigencia() {
         return fechaInicioVigencia;
     }
 
-    public void setFechaInicioVigencia(java.util.Date fechaInicioVigencia) {
+    public void setFechaInicioVigencia(LocalDateTime fechaInicioVigencia) {
         this.fechaInicioVigencia = fechaInicioVigencia;
     }
 

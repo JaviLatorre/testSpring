@@ -17,7 +17,9 @@ public class ArchivoController {
     // Obtener todos los archivos
     @GetMapping
     public Iterable<Archivo> findAll() {
-        return archivoRepository.findAll();
+        Iterable<Archivo> archivos = archivoRepository.findAll();
+        System.out.println("Datos obtenidos: " + archivos); // Agrega este log para verificar la respuesta
+        return archivos;
     }
 
     // Obtener archivo por ID

@@ -1,7 +1,99 @@
+
 <html>
-    <head><title>Home Page</title></head>
+    <head><title>Página principal</title></head>
     <body>
         <h1>Hello!</h1>
-        <p>Wellcome to <span th:text="${appName}">Our App</span></p>
+        <p>Wellcome to <span th:text="${appName}">Consulta a archivos</span></p>
+        <table id="archivos-table" border="2">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Activo</th>
+                    <th>Código</th>
+                    <th>Fecha de Vigencia</th>
+                    <th>Nombre del Fichero</th>
+                    <th>Mime Type</th>
+                    <th>Nombre del fichero Friendly</th>
+                    <th>Obligatorio</th>
+                    <th>Orden</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+
+        <h1>Subir archivo</h1>
+        <form>
+            <label for="activo">Activo</label>
+            <input type="checkbox" id="activo" name="activo" value="true">
+            <br>
+            <label for="codigo">Código</label>
+            <input type="text" id="codigo" name="codigo">
+            <br>
+            <label for="fechaInicioVigencia">Fecha de Vigencia</label>
+            <input type="date" id="fechaInicioVigencia" name="fechaInicioVigencia">
+            <br>
+            <label for="nombreFichero">Nombre del Fichero</label>
+            <input type="text" id="nombreFichero" name="nombreFichero">
+            <br>
+            <label for="mimeType">Mime Type</label>
+            <input type="text" id="mimeType" name="mimeType">
+            <br>
+            <label for="nombreFicheroFriendly">Nombre del fichero Friendly</label>
+            <input type="text" id="nombreFicheroFriendly" name="nombreFicheroFriendly">
+            <br>
+            <label for="obligatorio">Obligatorio</label>
+            <input type="checkbox" id="obligatorio" name="obligatorio" value="true">
+            <br>
+            <label for="orden">Orden</label>
+            <input type="number" id="orden" name="orden">
+            <br>
+            <input type="submit" value="Subir archivo">
+        </form>
+        <script>
+            console.log('haciendo script');
+            fetch('/api/archivos')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#archivos-table tbody');
+                    console.log('Datos obtenidos:', data);
+                    data.forEach(archivo => {
+                        const row = document.createElement('tr');
+                        console.log(archivo);
+
+                        const fechaVigencia = archivo.fechaInicioVigencia ? new Date(archivo.fechaInicioVigencia) : null;
+                        const fechaVigenciaFormatted = fechaVigencia && !isNaN(fechaVigencia) ? fechaVigencia.toLocaleString() : 'Fecha no disponible';
+                        row.innerHTML = `
+                            <td>${archivo.id}</td>
+                            <td>${archivo.activo}</td>
+                            <td>${archivo.codigo}</td>
+                            <td>${fechaVigenciaFormatted}</td>
+                            <td>${archivo.nombreFichero}</td>
+                            <td>${archivo.mimeType}</td>
+                            <td>${archivo.nombreFicheroFriendly}</td>
+                            <td>${archivo.obligatorio}</td>
+                            <td>${archivo.orden}</td>
+                            <td>
+                                <button onclick="deleteArchivo(${archivo.id})">Eliminar</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error al obtener los archivos',error));
+
+                function deleteArchivo(id){
+                    fetch(`/api/archivos/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Archivo eliminado', data);
+                        location.reload();
+                    })
+                    .catch(error => console.error('Error al eliminar el archivo', error));
+                }
+        </script>
     </body>
 </html>
